@@ -5,7 +5,7 @@ Content-Type: application/json
 
 {
   "username": "kate19981",
-  "password": "kate19981"
+  "password": "kate19981У№!:$K"
 }
 
 ### Positive test: Admin can create new user with correct data
@@ -25,8 +25,8 @@ Content-Type: application/json
 Authorization: Basic YWRtaW46YWRtaW4=
 
 {
-  "username": "  ",
-  "password": "{{$random.uuid}}",
+  "username": "kate19981",
+  "password": "kate19981У№!:$K",
   "role": "USER"
 }
 
