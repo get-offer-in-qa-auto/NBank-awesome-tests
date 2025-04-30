@@ -9,6 +9,11 @@ Content-Type: application/json
 }
 
 ### Positive test: Admin can create new user with correct data
+GET http://localhost:4111/api/v1/admin/users
+Content-Type: application/json
+Authorization: Basic YWRtaW46YWRtaW4=
+
+### Positive test: Admin can create new user with correct data
 POST http://localhost:4111/api/v1/admin/users
 Content-Type: application/json
 Authorization: Basic YWRtaW46YWRtaW4=
