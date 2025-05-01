@@ -1,14 +1,14 @@
 package api.specs;
 
 import api.configs.Config;
+import api.models.LoginUserRequest;
+import api.requests.skelethon.Endpoint;
+import api.requests.skelethon.requesters.CrudRequester;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
-import api.models.LoginUserRequest;
-import api.requests.skelethon.Endpoint;
-import api.requests.skelethon.requesters.CrudRequester;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,10 +39,17 @@ public class RequestSpecs {
     }
 
     public static RequestSpecification authAsUser(String username, String password) {
+
+        return defaultRequestBuilder()
+                .addHeader("Authorization", getAuthHeader(username, password))
+                .build();
+    }
+
+    public static String getAuthHeader(String username, String password) {
         String userAuthHeader;
 
         if (!authHeaders.containsKey(username)) {
-             userAuthHeader = new CrudRequester(
+            userAuthHeader = new CrudRequester(
                     RequestSpecs.unauthSpec(),
                     Endpoint.LOGIN,
                     ResponseSpecs.requestReturnsOK())
@@ -50,13 +57,11 @@ public class RequestSpecs {
                     .extract()
                     .header("Authorization");
 
-             authHeaders.put(username, userAuthHeader);
+            authHeaders.put(username, userAuthHeader);
         } else {
             userAuthHeader = authHeaders.get(username);
         }
 
-        return defaultRequestBuilder()
-                .addHeader("Authorization", userAuthHeader)
-                .build();
+        return userAuthHeader;
     }
 }
