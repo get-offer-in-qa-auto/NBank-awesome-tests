@@ -5,8 +5,11 @@ import com.codeborne.selenide.Selectors;
 import com.codeborne.selenide.SelenideElement;
 import lombok.Getter;
 import org.openqa.selenium.Alert;
+import ui.elements.UserBage;
 import ui.pages.BankAlert;
 import ui.pages.BasePage;
+
+import java.util.List;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.switchTo;
@@ -30,7 +33,9 @@ public class AdminPanel extends BasePage<AdminPanel> {
         return this;
     }
 
-    public ElementsCollection getAllUsers() {
-        return $(Selectors.byText("All Users")).parent().findAll("li");
+    public List<UserBage> getAllUsers() {
+        ElementsCollection elements = $(Selectors.byText("All Users")).parent().findAll("li");
+        var s= generatePageElements(elements, UserBage::new);
+        return s;
     }
 }

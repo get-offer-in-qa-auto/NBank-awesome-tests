@@ -1,11 +1,13 @@
 package iteration1.ui;
 
+import api.annotations.Browsers;
+import api.configs.SessionStorage;
+import api.annotations.WithUserSessions;
+import api.annotations.Environments;
 import api.models.CreateAccountResponse;
-import api.models.CreateUserRequest;
-import api.requests.steps.AdminSteps;
-import api.requests.steps.UserSteps;
 import org.junit.jupiter.api.Test;
 import ui.pages.BankAlert;
+import ui.pages.BasePage;
 import ui.pages.UserDashboard;
 
 import java.util.List;
@@ -15,15 +17,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CreateAccountTest extends BaseUiTest {
 
     @Test
+    @WithUserSessions()
+    @Browsers({"chrome", "firefox"})
+    @Environments({"desktop", "tablet"})
     public void userCanCreateAccountTest() {
-        CreateUserRequest user = AdminSteps.createUser();
+        var user = SessionStorage.getUser();
+        var userSteps = SessionStorage.getSteps();
 
-        authAsUser(user.getUsername(), user.getPassword());
+        BasePage.authAsUser(user.getUsername(), user.getPassword());
 
         String createdAccountNumber = new UserDashboard().open().createAccount()
                 .checkAlertAndExtractAndAccept(BankAlert.NEW_ACCOUNT_ADDED, "Account Number: (\\w+)");
 
-        List<CreateAccountResponse> existingUserAccounts = new UserSteps(user.getUsername(), user.getPassword()).getAllAccounts();
+        List<CreateAccountResponse> existingUserAccounts = userSteps.getAllAccounts();
         CreateAccountResponse createAccount = existingUserAccounts.stream().filter(account -> account.getAccountNumber().equals(createdAccountNumber)).findFirst().get();
 
         assertThat(createAccount).isNotNull();
